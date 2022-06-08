@@ -33,9 +33,9 @@ By password = By.id("password");
 By submit = By.id("submit");
 
 
-public boolean searchfor (String searchstr) throws IOException
+public int  searchfor (String searchstr) throws IOException
 {
-	boolean found;
+	int found=0;
 	
 	driver.navigate().to("http://advantageonlineshopping.com/");
 	
@@ -46,7 +46,7 @@ public boolean searchfor (String searchstr) throws IOException
 		
 		//if result is not found for the keyword
 	      driver.findElement(resultNotFound);
-	      found = false;
+	      found = 0;
 	        TakesScreenshot scrShot =((TakesScreenshot)driver);
 	        //Call getScreenshotAs method to create image file
 	        File SrcFile=scrShot.getScreenshotAs(OutputType.FILE);
@@ -64,7 +64,10 @@ public boolean searchfor (String searchstr) throws IOException
 	//if result is found
 	catch (NoSuchElementException e)
 	{
-		found = true;
+		String str=driver.findElement(resultFound).getText();
+		int numitems = Integer.parseInt(str.replaceAll("\\D+",""));
+				
+		found = numitems;
 		
 	}
 	return found;

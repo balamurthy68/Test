@@ -25,7 +25,8 @@ import cucumber.api.java.en.When;
 public class searchPage {
 	static WebDriver driver;
 	static String srch;
-	static boolean success;
+	int actual_noOfItemsFound ;
+	int expected_noOfItems;
 	static String s;
 	static Scenario curScenario;
 
@@ -38,15 +39,13 @@ public class searchPage {
 		System.setProperty("webdriver.chrome.driver", exePath);
 
 
-//		Reporter.addStepLog("*******Begin scenario.");
+		//		Reporter.addStepLog("*******Begin scenario.");
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 		driver.get("http://advantageonlineshopping.com/");
 
-
-
-	}
+		}
 
 	//LIST APPROACH OF DATA TABLES
 	@When("^I enter a search keyword in the search box$")
@@ -57,21 +56,32 @@ public class searchPage {
 		// E,K,V must be a scalar (String, Integer, Date, enum etc)
 
 		//instantiate the page class
-				HomePage home = new HomePage(driver);
+		HomePage home = new HomePage(driver);
 
 		List<List<String>> rows = table.asLists(String.class);
 
 		for (List<String> columns : rows) {
 			System.out.println(columns.get(0));
 			s = columns.get(0);
-
-			//PERFORM THE SEARCH
+			expected_noOfItems=(Integer.parseInt(columns.get(1)));
 			
-			success= home.searchfor(s);
-			System.out.println("Search for : " + s + " is :" + success);
-			//Reporter.addStepLog("Search for : " + s + " is :" + success);
+			//PERFORM THE SEARCH
 
-			Assert.assertEquals(true, success);
+			actual_noOfItemsFound = home.searchfor(s);
+
+			if (actual_noOfItemsFound==0) {
+				System.out.println("Search for : " + s + " returned no Items.");
+				Reporter.addStepLog("Search for : " + s + " returned no Items.");
+			}
+			else {
+
+				System.out.println("Search for : " + s + " returned :" + actual_noOfItemsFound + " Items.");
+				Reporter.addStepLog("Search for : " + s + " returned :" + actual_noOfItemsFound + " Items.");
+			}
+			
+			
+			Assert.assertEquals(expected_noOfItems, actual_noOfItemsFound);
+			
 			driver.get("http://advantageonlineshopping.com/");
 		}
 
@@ -95,7 +105,7 @@ public class searchPage {
 
 
 		List<Map<String,String>> data = dataparam.asMaps(String.class, String.class);
-	
+
 		int numrows = data.size();
 		System.out.println(" Rows : " + numrows);
 
@@ -105,7 +115,7 @@ public class searchPage {
 			s = data.get(i).get("Productname");
 
 			//PERFORM THE SEARCH
-			
+
 			success= home.searchfor(s);
 			System.out.println("Search for : " + s + " is :" + success);
 			//Reporter.addStepLog("Search for : " + s + " is :" + success);
@@ -119,9 +129,9 @@ public class searchPage {
 
 
 		}
-	
+
 	}
-	*/
+	 */
 
 	@Then("I validate the outcomes")
 	public void i_validate_the_outcomes() {

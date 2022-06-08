@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.asserts.SoftAssert;
 
 import com.cucumber.listener.Reporter;
 
@@ -29,7 +30,7 @@ public class searchPage {
 	int expected_noOfItems;
 	static String s;
 	static Scenario curScenario;
-
+	SoftAssert sa;
 
 
 	@Given("I am in homepage")
@@ -55,6 +56,7 @@ public class searchPage {
 		// List<YourType>, List<List<E>>, List<Map<K,V>> or Map<K,V>.
 		// E,K,V must be a scalar (String, Integer, Date, enum etc)
 
+	
 		//instantiate the page class
 		HomePage home = new HomePage(driver);
 
@@ -75,12 +77,13 @@ public class searchPage {
 			}
 			else {
 
-				System.out.println("Search for : " + s + " returned :" + actual_noOfItemsFound + " Items.");
-				Reporter.addStepLog("Search for : " + s + " returned :" + actual_noOfItemsFound + " Items.");
+				System.out.println("Search for : " + s + " returned :" + actual_noOfItemsFound + " Items. Expected no of items is:"+expected_noOfItems);
+				Reporter.addStepLog("Search for : " + s + " returned :" + actual_noOfItemsFound + " Items. Expected no of items is:"+expected_noOfItems);
 			}
 			
-			
-			Assert.assertEquals(expected_noOfItems, actual_noOfItemsFound);
+			//SOFTASSERT TO CONTINUE EXECUTION TO NEXT SEARCH STRING IN THE LOOP.
+			sa = new SoftAssert();
+			sa.assertEquals(expected_noOfItems, actual_noOfItemsFound);
 			
 			driver.get("http://advantageonlineshopping.com/");
 		}
